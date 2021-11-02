@@ -9,7 +9,7 @@ class LoginInput extends StatefulWidget {
   final ValueChanged<bool>? focusChanged; // 输入框焦点发生变化回调函数
   final bool lineStretch; // 用于控制输入框央视
   final bool obscureTexrt; // 输入框是否为密码
-  final TextInputType? keboardType; // 输入框状态
+  final TextInputType? keyboardType; // 输入框状态
 
   const LoginInput({
     Key? key,
@@ -19,7 +19,7 @@ class LoginInput extends StatefulWidget {
     this.focusChanged,
     this.lineStretch = false,
     this.obscureTexrt = false,
-    this.keboardType,
+    this.keyboardType,
   }) : super(key: key);
 
   @override
@@ -77,7 +77,7 @@ class _LoginInputState extends State<LoginInput> {
         focusNode: _focusNode,
         onChanged: widget.onChanged,
         obscureText: widget.obscureTexrt,
-        keyboardType: widget.keboardType,
+        keyboardType: widget.keyboardType,
         autofocus: !widget.obscureTexrt,
         cursorColor: primary,
         style: const TextStyle(

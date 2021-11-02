@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 AppBar appBar(
     {required String title,
     required String rightTitle,
-    required VoidCallback rightButtonClick}) {
+    VoidCallback? rightButtonClick}) {
   return AppBar(
     // 让 title 居左
     centerTitle: false,
