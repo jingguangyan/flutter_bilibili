@@ -15,13 +15,11 @@ class LoginDao {
   /// password "zeng123456"
   /// imoocId "7587899"
   /// orderId "7807"
-  static registration(
-      String userName, String password, String imoocId, String orderId) {
+  static registration(String userName, String password, String imoocId, String orderId) {
     return _send(userName, password, imoocId: imoocId, orderId: orderId);
   }
 
-  static _send(String userName, String password,
-      {String? imoocId, String? orderId}) async {
+  static _send(String userName, String password, {String? imoocId, String? orderId}) async {
     BaseRequest request;
     if (imoocId != null && orderId != null) {
       request = RegistrationRequest();
@@ -42,7 +40,7 @@ class LoginDao {
     return result;
   }
 
-  static String getBoardingPass() {
-    return HiCache.getInstance().get(BOARDING_PASS) ?? '';
+  static String? getBoardingPass() {
+    return HiCache.getInstance().get(BOARDING_PASS);
   }
 }

@@ -35,7 +35,7 @@ abstract class BaseRequest {
 
     if (needLoading()) {
       // 给需要登录的接口携带登录令牌
-      addHeader(LoginDao.BOARDING_PASS, LoginDao.getBoardingPass());
+      addHeader(LoginDao.BOARDING_PASS, LoginDao.getBoardingPass() ?? '');
     }
     print('uri:${uri.toString()}');
     return uri.toString();
