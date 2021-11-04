@@ -10,7 +10,9 @@ import 'package:flutter_bilibili/util/string_util.dart';
 import 'package:flutter_bilibili/http/dao/login_dao.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  final VoidCallback? onJumpRegistration;
+  final VoidCallback? onSuccess;
+  const LoginPage({Key? key, this.onJumpRegistration, this.onSuccess}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -28,9 +30,10 @@ class _LoginPageState extends State<LoginPage> {
       appBar: appBar(
         title: "密码登录",
         rightTitle: '注册',
-        rightButtonClick: () {
-          // HiNavigator.getInstance().onJumpTo((RouteStatus.registration));
-        },
+        rightButtonClick: widget.onJumpRegistration,
+        // rightButtonClick: () {
+        // HiNavigator.getInstance().onJumpTo((RouteStatus.registration));
+        // },
       ),
       body: Container(
         child: ListView(
@@ -94,6 +97,9 @@ class _LoginPageState extends State<LoginPage> {
 
       if (result["code"] == 0) {
         showToast("登录成功");
+        if (widget.onSuccess != null) {
+          widget.onSuccess!();
+        }
         // HiNavigator.getInstance().onJumpTo((RouteStatus.home));
       } else {
         showWarnToast(result["msg"]);
