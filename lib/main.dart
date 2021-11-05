@@ -3,6 +3,7 @@ import 'package:flutter_bilibili/db/hi_cache.dart';
 import 'package:flutter_bilibili/http/dao/login_dao.dart';
 
 import 'package:flutter_bilibili/model/video_model.dart';
+import 'package:flutter_bilibili/navigator/bottom_navigator.dart';
 import 'package:flutter_bilibili/navigator/hi_navigtor.dart';
 import 'package:flutter_bilibili/page/home_page.dart';
 import 'package:flutter_bilibili/page/login_page.dart';
@@ -83,7 +84,7 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath> with ChangeNotifie
     if (routeStatus == RouteStatus.home) {
       // 跳转首页时将栈中其他页面进行出栈，因为首页不可回退；
       pages.clear();
-      page = pageWrap(HomePage());
+      page = pageWrap(BottomNavigator());
     } else if (routeStatus == RouteStatus.detail) {
       page = pageWrap(VideoDetailPage(videoModel: videoModel!));
     } else if (routeStatus == RouteStatus.registration) {

@@ -9,14 +9,14 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   late RouteChangeListener listener;
   @override
   void initState() {
     super.initState();
     listener = (current, pre) {
-      print('current: ${current.page}');
-      print('current:${pre?.page}');
+      print('home:current: ${current.page}');
+      print('home:pre:${pre?.page}');
 
       if (widget == current.page || current.page is HomePage) {
         print('打开了首页 onResume');
@@ -55,4 +55,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
