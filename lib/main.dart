@@ -50,11 +50,24 @@ class _BiliAppState extends State<BiliApp> {
 
 class BiliRouteDelegate extends RouterDelegate<BiliRoutePath> with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   @override
-  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> navigatorKey;
 
   RouteStatus _routeStatus = RouteStatus.home;
   List<MaterialPage> pages = [];
   VideoModel? videoModel;
+
+  BiliRouteDelegate() : navigatorKey = GlobalKey<NavigatorState>() {
+    // 实现路由跳转逻辑
+    HiNavigator.getInstance().registerRouteJump(RouteJumpListener(onJumpTo: (RouteStatus routeStatus, {Map? args}) {
+      _routeStatus = routeStatus;
+      if (routeStatus == RouteStatus.detail) {
+        this.videoModel = args!["videoModel"];
+      } else {
+        this.videoModel = null;
+      }
+      notifyListeners();
+    }));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,36 +83,20 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath> with ChangeNotifie
     if (routeStatus == RouteStatus.home) {
       // 跳转首页时将栈中其他页面进行出栈，因为首页不可回退；
       pages.clear();
-      page = pageWrap(HomePage(
-        onJumpToDetail: (VideoModel videM) {
-          videoModel = videM;
-          notifyListeners();
-        },
-      ));
+      page = pageWrap(HomePage());
     } else if (routeStatus == RouteStatus.detail) {
       page = pageWrap(VideoDetailPage(videoModel: videoModel!));
     } else if (routeStatus == RouteStatus.registration) {
-      page = pageWrap(RegistrationPage(
-        onJumpToLogin: () {
-          _routeStatus = RouteStatus.login;
-          notifyListeners();
-        },
-      ));
+      page = pageWrap(RegistrationPage());
     } else if (routeStatus == RouteStatus.login) {
-      page = pageWrap(LoginPage(
-        onJumpRegistration: () {
-          _routeStatus = RouteStatus.registration;
-          notifyListeners();
-        },
-        onSuccess: () {
-          _routeStatus = RouteStatus.home;
-          notifyListeners();
-        },
-      ));
+      page = pageWrap(LoginPage());
     }
     // 重新创建一个数组，否则pages因引用没有改变，路由不会生效
     _tempPages = [..._tempPages, page];
+    // 通知路由变化
+    HiNavigator.getInstance().notify(_tempPages, pages);
     pages = _tempPages;
+
     return WillPopScope(
       // fix Android 物理返回按键，无法返回上一页问题 @https://github.com/flutter/flutter/issues/66349
       onWillPop: () async => !await navigatorKey.currentState!.maybePop(),
@@ -118,7 +115,12 @@ class BiliRouteDelegate extends RouterDelegate<BiliRoutePath> with ChangeNotifie
           }
           // 在这里可以控制是否可以返回
           if (!route.didPop(result)) return false;
+
+          List<MaterialPage> tempPages = [...pages];
           pages.removeLast();
+
+          /// 通知路由发生变化
+          HiNavigator.getInstance().notify(pages, tempPages);
           return true;
         },
       ),

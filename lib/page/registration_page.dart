@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bilibili/http/core/hi_error.dart';
 import 'package:flutter_bilibili/http/dao/login_dao.dart';
+import 'package:flutter_bilibili/navigator/hi_navigtor.dart';
 import 'package:flutter_bilibili/util/string_util.dart';
 import 'package:flutter_bilibili/util/toast.dart';
 import 'package:flutter_bilibili/widget/appbar.dart';
@@ -9,8 +10,7 @@ import 'package:flutter_bilibili/widget/login_effect.dart';
 import 'package:flutter_bilibili/widget/login_input.dart';
 
 class RegistrationPage extends StatefulWidget {
-  final VoidCallback? onJumpToLogin;
-  const RegistrationPage({Key? key, this.onJumpToLogin}) : super(key: key);
+  const RegistrationPage({Key? key}) : super(key: key);
 
   @override
   _RegistrationPageState createState() => _RegistrationPageState();
@@ -32,7 +32,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
       appBar: appBar(
         title: '注册',
         rightTitle: "登录",
-        rightButtonClick: widget.onJumpToLogin,
+        rightButtonClick: () {
+          HiNavigator.getInstance().onJumpTo(RouteStatus.login);
+        },
       ),
       body: Container(
         child: ListView(
@@ -142,8 +144,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   void send() async {
     try {
 //      var result = await LoginDao.registration("misszeng", "zeng123456", "7587899", "7807");
-      var result =
-          await LoginDao.registration(userName, password, imoocId, orderId);
+      var result = await LoginDao.registration(userName, password, imoocId, orderId);
 
       if (result["code"] == 0) {
         showToast("注册成功");

@@ -4,6 +4,8 @@ import 'package:flutter_bilibili/page/login_page.dart';
 import 'package:flutter_bilibili/page/registration_page.dart';
 import 'package:flutter_bilibili/page/video_detail_page.dart';
 
+typedef RouteChangeListener = Function(RouteStatusInfo current, RouteStatusInfo? pre);
+
 /// 创建页面
 MaterialPage pageWrap(Widget child) {
   return MaterialPage(key: ValueKey(child.hashCode), child: child);
@@ -36,4 +38,75 @@ class RouteStatusInfo {
   final Widget page;
 
   RouteStatusInfo(this.routeStatus, this.page);
+}
+
+///监听路由页面跳转
+///感知当前页面是否压在后台
+class HiNavigator extends _RouteJumpListener {
+  static HiNavigator? _instance;
+  RouteJumpListener? _routeJump;
+  final List<RouteChangeListener> _listeners = [];
+  RouteStatusInfo? _current;
+  HiNavigator._();
+
+  static HiNavigator getInstance() {
+    return _instance ??= HiNavigator._();
+  }
+
+  /// 注册路由的跳转逻辑
+  void registerRouteJump(RouteJumpListener routeJumpListener) {
+    _routeJump = routeJumpListener;
+  }
+
+  /// 添加路由监听
+  void addListener(RouteChangeListener listener) {
+    if (!_listeners.contains(listener)) {
+      _listeners.add(listener);
+    }
+  }
+
+  /// 移除路由监听
+  void removeListener(RouteChangeListener listener) {
+    _listeners.remove(listener);
+  }
+
+  /// 通知路由页面变化
+  void notify(List<MaterialPage> currentPages, List<MaterialPage> prePages) {
+    if (currentPages == prePages) return;
+    var current = RouteStatusInfo(getStatus(currentPages.last), currentPages.last.child);
+    _notify(current);
+  }
+
+  void _notify(RouteStatusInfo current) {
+    print('hi_navigator:current:${current.page}');
+    print('hi_navigator:pre:${_current?.page}');
+
+    _listeners.forEach((listener) {
+      listener(current, _current);
+    });
+    _current = current;
+  }
+
+  @override
+  void onJumpTo(RouteStatus routeStataus, {Map? args}) {
+    print(routeStataus);
+    print(_routeJump);
+    if (_routeJump != null) {
+      _routeJump!.onJumpTo!(routeStataus, args: args);
+    }
+  }
+}
+
+/// 抽象类供 HiNavigator 实现
+abstract class _RouteJumpListener {
+  void onJumpTo(RouteStatus routeStataus, {Map? args});
+}
+
+typedef OnJumpTo = void Function(RouteStatus routeStatus, {Map? args});
+
+/// 定义路由跳转逻辑实现的功能
+class RouteJumpListener {
+  final OnJumpTo? onJumpTo;
+
+  RouteJumpListener({this.onJumpTo});
 }
