@@ -1,0 +1,16 @@
+{
+  "id": 1,
+  "message": "hello world",
+  "product": "$product",
+  "strList": ["a", "b"],
+  "intList": [1,2],
+  "doubleList": [1.2,2.2],
+  "boolList": [true, false],
+  "startTime": "@datetime",
+  "type?": "@enum:INSIDE,OUTSIDE,CLIENT,HOME,ROOM,UNKNOWN",
+  "point?": {
+    "longitude": 58.1234,
+    "latitude": 12.123
+  },
+  "@ignore customKey?": "customKey"
+}

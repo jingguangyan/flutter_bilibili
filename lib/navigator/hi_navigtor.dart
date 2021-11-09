@@ -43,28 +43,36 @@ class RouteStatusInfo {
 ///监听路由页面跳转
 ///感知当前页面是否压在后台
 class HiNavigator extends _RouteJumpListener {
-  static HiNavigator? _instance;
   RouteJumpListener? _routeJump;
   final List<RouteChangeListener> _listeners = [];
   RouteStatusInfo? _current;
   // 首页底部tab
   RouteStatusInfo? _bottomTab;
 
+  static HiNavigator? _instance;
   HiNavigator._();
-
   static HiNavigator getInstance() {
     return _instance ??= HiNavigator._();
+  }
+
+  /// 注册路由的跳转逻辑
+  void registerRouteJump(RouteJumpListener routeJumpListener) {
+    _routeJump = routeJumpListener;
+  }
+
+  @override
+  void onJumpTo(RouteStatus routeStataus, {Map? args}) {
+    print(routeStataus);
+    print(_routeJump);
+    if (_routeJump != null) {
+      _routeJump!.onJumpTo!(routeStataus, args: args);
+    }
   }
 
   /// 首页底部bottom切换监听
   void onBottomTabChange(int index, Widget page) {
     _bottomTab = RouteStatusInfo(RouteStatus.home, page);
     _notify(_bottomTab!);
-  }
-
-  /// 注册路由的跳转逻辑
-  void registerRouteJump(RouteJumpListener routeJumpListener) {
-    _routeJump = routeJumpListener;
   }
 
   /// 添加路由监听
@@ -98,15 +106,6 @@ class HiNavigator extends _RouteJumpListener {
       listener(current, _current);
     });
     _current = current;
-  }
-
-  @override
-  void onJumpTo(RouteStatus routeStataus, {Map? args}) {
-    print(routeStataus);
-    print(_routeJump);
-    if (_routeJump != null) {
-      _routeJump!.onJumpTo!(routeStataus, args: args);
-    }
   }
 }
 

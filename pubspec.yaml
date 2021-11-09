@@ -38,6 +38,10 @@ dependencies:
   dio: ^4.0.1
   shared_preferences: ^2.0.8
   fluttertoast: ^8.0.8
+  underline_indicator: ^0.0.4
+  json_to_model: ^3.0.2
+  quiver: ^3.0.1+1
+  flutter_swiper_null_safety: ^1.0.2
 
 dev_dependencies:
   flutter_test:

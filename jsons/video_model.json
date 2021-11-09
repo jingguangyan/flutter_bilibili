@@ -1,0 +1,24 @@
+{
+  "id?": "123",
+  "vid?": "123",
+  "title?": "123",
+  "tname?": "123",
+  "url?": "123",
+  "cover?": "123",
+  "pubdate?": 123,
+  "desc?": "123",
+  "view?": 123,
+  "duration?": 123,
+  "owner?": {
+    "name?": "123",
+    "face?": "123",
+    "fans?": 123
+  },
+  "reply?": 123,
+  "favorite?": 123,
+  "like?": 123,
+  "coin?": 123,
+  "share?": 123,
+  "createTime?": "123",
+  "size?": 123
+}

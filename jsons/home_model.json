@@ -1,0 +1,19 @@
+{
+  "bannerList": [{
+      "$key": "BannerMo",
+      "id?": "123",
+      "type?": "123",
+      "title?": "123",
+      "subtitle?": "123",
+      "url?": "123",
+      "cover?": "123",
+      "createTime?": "123",
+      "sticky?": 123
+  }],
+  "categoryList": [{
+    "$key": "CategoryMo",
+    "name?": "123",
+    "count?": 123
+  }],
+  "videoList": "$[]video_model"
+}
