@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bilibili/models/video_model.dart';
 import 'package:flutter_bilibili/navigator/hi_navigtor.dart';
 import 'package:flutter_bilibili/util/format_util.dart';
+import 'package:flutter_bilibili/util/view_util.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class VideoCard extends StatelessWidget {
@@ -39,13 +40,10 @@ class VideoCard extends StatelessWidget {
   Widget _itemImage(BuildContext context, Size size) {
     return Stack(
       children: [
-        FadeInImage.memoryNetwork(
-          height: 120,
-          // 默认宽度
+        cachedImage(
+          videoModel.cover ?? '',
           width: size.width / 2 - 20,
-          placeholder: kTransparentImage,
-          image: videoModel.cover ?? '',
-          fit: BoxFit.cover,
+          height: 120,
         ),
         Positioned(
           left: 0,
@@ -130,7 +128,7 @@ class VideoCard extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
-              child: Image.network(
+              child: cachedImage(
                 videoModel.owner?.face ?? '',
                 width: 24,
                 height: 24,

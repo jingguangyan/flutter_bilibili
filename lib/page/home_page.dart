@@ -63,7 +63,6 @@ class _HomePageState extends HiState<HomePage> with AutomaticKeepAliveClientMixi
           ),
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.only(top: 30),
             child: _tabBar(),
           ),
           Flexible(

@@ -17,7 +17,7 @@ class HomeTabPage extends StatefulWidget {
   _HomeTabPageState createState() => _HomeTabPageState();
 }
 
-class _HomeTabPageState extends State<HomeTabPage> {
+class _HomeTabPageState extends State<HomeTabPage> with AutomaticKeepAliveClientMixin {
   List<VideoModel> videoList = [];
   int _pageIndex = 1;
 
@@ -29,6 +29,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return MediaQuery.removePadding(
       context: context,
       removeTop: true,
@@ -93,4 +94,7 @@ class _HomeTabPageState extends State<HomeTabPage> {
       setState(() {});
     }
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

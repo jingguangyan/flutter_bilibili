@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bilibili/models/video_model.dart';
+import 'package:flutter_bilibili/widget/video_view.dart';
 
 class VideoDetailPage extends StatefulWidget {
   final VideoModel videoModel;
@@ -14,9 +15,16 @@ class _VideoDetailPageState extends State<VideoDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Container(
-        child: Text('视频详情页， vid:${widget.videoModel.vid}'),
-      ),
+      body: Column(children: <Widget>[
+        Text('视频详情页， vid:${widget.videoModel.vid}'),
+        Text('视频详情页， title:${widget.videoModel.title}'),
+        _videoView(),
+      ]),
     );
+  }
+
+  Widget _videoView() {
+    VideoModel model = widget.videoModel;
+    return VideoView(url: model.url ?? '', cover: model.cover);
   }
 }
