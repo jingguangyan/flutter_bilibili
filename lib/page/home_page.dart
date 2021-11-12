@@ -11,6 +11,7 @@ import 'package:flutter_bilibili/page/video_detail_page.dart';
 import 'package:flutter_bilibili/util/color.dart';
 import 'package:flutter_bilibili/util/toast.dart';
 import 'package:flutter_bilibili/util/view_util.dart';
+import 'package:flutter_bilibili/widget/hi_tab.dart';
 import 'package:flutter_bilibili/widget/loading_container.dart';
 import 'package:flutter_bilibili/widget/navigation_bar.dart';
 
@@ -123,27 +124,21 @@ class _HomePageState extends HiState<HomePage>
   bool get wantKeepAlive => true;
 
   Widget _tabBar() {
-    return TabBar(
+    List<Widget> tabs = categoryList.map<Tab>((tab) {
+      return Tab(
+        child: Text(
+          tab.name ?? '',
+          style: const TextStyle(fontSize: 16),
+        ),
+      );
+    }).toList();
+
+    return HiTab(
+      tabs: tabs,
       controller: _tabController,
-      isScrollable: true,
-      labelColor: Colors.black,
-      indicator: const UnderlineTabIndicator(
-        borderSide: BorderSide(color: primary, width: 3),
-        insets: EdgeInsets.symmetric(horizontal: 15),
-      ),
-      tabs: categoryList
-          .map<Tab>(
-            (tab) => Tab(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Text(
-                  tab.name ?? '',
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ),
-          )
-          .toList(),
+      fontSize: 16,
+      unselectedLabelColor: Colors.black54,
+      insets: 13,
     );
   }
 
