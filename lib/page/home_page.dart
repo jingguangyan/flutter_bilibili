@@ -6,8 +6,12 @@ import 'package:flutter_bilibili/models/index.dart';
 import 'package:flutter_bilibili/models/video_model.dart';
 import 'package:flutter_bilibili/navigator/hi_navigtor.dart';
 import 'package:flutter_bilibili/page/home_tab_page.dart';
+import 'package:flutter_bilibili/page/profile_page.dart';
+import 'package:flutter_bilibili/page/video_detail_page.dart';
 import 'package:flutter_bilibili/util/color.dart';
 import 'package:flutter_bilibili/util/toast.dart';
+import 'package:flutter_bilibili/util/view_util.dart';
+import 'package:flutter_bilibili/widget/loading_container.dart';
 import 'package:flutter_bilibili/widget/navigation_bar.dart';
 
 class HomePage extends StatefulWidget {
@@ -18,24 +22,33 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends HiState<HomePage> with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+class _HomePageState extends HiState<HomePage>
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin, WidgetsBindingObserver {
   late RouteChangeListener listener;
   late TabController _tabController;
   List<CategoryMo> categoryList = [];
   List<BannerMo> bannerList = [];
-  bool _isLoading = false;
+  bool _isLoading = true;
+  Widget? _currentPage;
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
     _tabController = TabController(length: categoryList.length, vsync: this);
     listener = (current, pre) {
       print('home:current: ${current.page}');
       print('home:pre:${pre?.page}');
 
+      _currentPage = current.page;
+
       if (widget == current.page || current.page is HomePage) {
         print('打开了首页 onResume');
       } else if (widget == pre?.page || pre?.page is HomePage) {
         print('首页：onPause');
+      }
+      // 当页面返回到首页恢复首页的状态栏样式
+      if (pre?.page is VideoDetailPage && !(current.page is ProfilePage)) {
+        changeStatusBar(color: Colors.white, statusStyle: StatusStyle.DARK_CONTENT);
       }
     };
     HiNavigator.getInstance().addListener(listener);
@@ -44,39 +57,64 @@ class _HomePageState extends HiState<HomePage> with AutomaticKeepAliveClientMixi
 
   @override
   void dispose() {
+    WidgetsBinding.instance?.removeObserver(this);
     _tabController.dispose();
     HiNavigator.getInstance().removeListener(listener);
     super.dispose();
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    print(state);
+    switch (state) {
+      case AppLifecycleState.inactive: // 处于这种状态的应用程序应该假设它们可能在任何时候暂停；
+        break;
+      case AppLifecycleState.resumed: // 从后台切换前台，界面可见
+        // fix Android 压后台，状态栏字体颜色变白问题
+        if (!(_currentPage is VideoDetailPage)) {
+          changeStatusBar(color: Colors.white, statusStyle: StatusStyle.DARK_CONTENT);
+        }
+        break;
+      case AppLifecycleState.paused: // 界面不可见，后台
+        break;
+      case AppLifecycleState.detached: // APP结束时调用
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          NavigationBar(
-            height: 50,
-            child: _appBar(),
-            color: Colors.white,
-            statusStyle: StatusStyle.DARK_CONTENT,
-          ),
-          Container(
-            color: Colors.white,
-            child: _tabBar(),
-          ),
-          Flexible(
-            child: TabBarView(
-              controller: _tabController,
-              children: categoryList.map<HomeTabPage>((tab) {
-                return HomeTabPage(
-                  categoryName: tab.name ?? '',
-                  bannerList: tab.name == '推荐' ? bannerList : null,
-                );
-              }).toList(),
+      body: LoadingContainer(
+        cover: true,
+        isLoading: _isLoading,
+        child: Column(
+          children: <Widget>[
+            NavigationBar(
+              height: 50,
+              child: _appBar(),
+              color: Colors.white,
+              statusStyle: StatusStyle.DARK_CONTENT,
             ),
-          )
-        ],
+            Container(
+              color: Colors.white,
+              child: _tabBar(),
+            ),
+            Flexible(
+              child: TabBarView(
+                controller: _tabController,
+                children: categoryList.map<HomeTabPage>((tab) {
+                  return HomeTabPage(
+                    categoryName: tab.name ?? '',
+                    bannerList: tab.name == '推荐' ? bannerList : null,
+                  );
+                }).toList(),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -163,7 +201,7 @@ class _HomePageState extends HiState<HomePage> with AutomaticKeepAliveClientMixi
                   padding: EdgeInsets.only(left: 10),
                   height: 32,
                   alignment: Alignment.centerLeft,
-                  child: Icon(
+                  child: const Icon(
                     Icons.search,
                     color: Colors.grey,
                   ),
