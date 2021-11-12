@@ -1,7 +1,9 @@
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bilibili/util/color.dart';
 import 'package:flutter_bilibili/util/view_util.dart';
+import 'package:orientation/orientation.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_bilibili/widget/hi_video_controls.dart';
 
@@ -11,6 +13,7 @@ class VideoView extends StatefulWidget {
   final bool autoPlay;
   final bool looping;
   final double aspectRatio;
+  final Widget? overlayUI;
   const VideoView({
     Key? key,
     required this.url,
@@ -18,6 +21,7 @@ class VideoView extends StatefulWidget {
     this.autoPlay = false,
     this.looping = false,
     this.aspectRatio = 16 / 9,
+    this.overlayUI,
   }) : super(key: key);
 
   @override
@@ -55,15 +59,17 @@ class _VideoViewState extends State<VideoView> {
         showLoadingOnInitialize: false,
         showBigPlayIcon: false,
         bottomGradient: blackLinearGradient(),
+        overlayUI: widget.overlayUI,
       ),
       materialProgressColors: _progressColors,
-    );
+    )..addListener(_fullScreenListener);
   }
 
   @override
   void dispose() {
-    _chewieController.dispose();
+    _chewieController.removeListener(_fullScreenListener);
     _videoPlayerController.dispose();
+    _chewieController.dispose();
     super.dispose();
   }
 
@@ -80,5 +86,12 @@ class _VideoViewState extends State<VideoView> {
         controller: _chewieController,
       ),
     );
+  }
+
+  void _fullScreenListener() {
+    Size size = MediaQuery.of(context).size;
+    if (size.width > size.height) {
+      OrientationPlugin.forceOrientation(DeviceOrientation.portraitUp);
+    }
   }
 }

@@ -353,7 +353,7 @@ class _HiMaterialControlsState extends State<HiMaterialControls> with SingleTick
             _cancelAndRestartTimer();
           }
         } else {
-          _playPause();
+          // _playPause();
 
           setState(() {
             notifier.hideStuff = true;
@@ -494,6 +494,11 @@ class _HiMaterialControlsState extends State<HiMaterialControls> with SingleTick
   }
 
   void _onExpandCollapse() {
+    Size? size = chewieController.videoPlayerController.value.size;
+    if (size == null || (size.width == 0 && size.height == 0)) {
+      print('_onExpandCollapse:videoPlayerController.value.size is null.');
+      return;
+    }
     setState(() {
       notifier.hideStuff = true;
 

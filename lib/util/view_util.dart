@@ -1,5 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bilibili/widget/navigation_bar.dart';
 
 ///带缓存的image
 
@@ -30,4 +32,15 @@ blackLinearGradient({bool fromTop = false}) {
         Colors.black12,
         Colors.transparent,
       ]);
+}
+
+/// 修改状态栏
+void changeStatusBar({color: Colors.white, StatusStyle statusStyle: StatusStyle.DARK_CONTENT}) {
+  SystemChrome.setSystemUIOverlayStyle(
+    SystemUiOverlayStyle.dark.copyWith(
+      statusBarColor: color,
+      statusBarIconBrightness: statusStyle == StatusStyle.DARK_CONTENT ? Brightness.dark : Brightness.light,
+      statusBarBrightness: statusStyle == StatusStyle.DARK_CONTENT ? Brightness.light : Brightness.dark,
+    ),
+  );
 }
